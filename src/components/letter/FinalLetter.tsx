@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Feather, Heart, Printer, Check, Copy, Sparkles } from 'lucide-react';
+import { Feather, Heart, Check, Copy, Sparkles } from 'lucide-react';
 import { finalLetterContent } from '../../data/letters';
 import { appConfig } from '../../data/config';
 import { soundscape } from '../../utils/audio';
 
 export const FinalLetter: React.FC = () => {
   const [copied, setCopied] = useState(false);
-
-  const handlePrint = () => {
-    window.print();
-  };
 
   const handleCopy = () => {
     const fullText = `${finalLetterContent.greeting}\n\n${finalLetterContent.paragraphs.join('\n\n')}\n\n${finalLetterContent.signoff}\n${finalLetterContent.sender}\n${finalLetterContent.location} • ${finalLetterContent.date}`;
@@ -123,13 +119,6 @@ export const FinalLetter: React.FC = () => {
               >
                 {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copied ? 'Copied' : 'Copy Words'}</span>
-              </button>
-              <button
-                onClick={handlePrint}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-neutral-900 hover:bg-neutral-800 text-white font-medium transition-colors"
-              >
-                <Printer className="w-3.5 h-3.5" />
-                <span>Print Keepsake</span>
               </button>
             </div>
           </div>

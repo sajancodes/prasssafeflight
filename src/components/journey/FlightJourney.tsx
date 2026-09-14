@@ -56,17 +56,6 @@ export const FlightJourney: React.FC = () => {
         {/* Section Header Text */}
         <div className="text-center space-y-3 max-w-2xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs tracking-widest uppercase text-amber-300 font-sans"
-          >
-            <Compass className="w-3.5 h-3.5" />
-            <span>Flight Trajectory</span>
-          </motion.div>
-
-          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}

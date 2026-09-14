@@ -242,6 +242,227 @@ class SoundscapeEngine {
       // ignore
     }
   }
+
+  // Play realistic culinary cake slice sound & celebratory chime
+  public playCakeCutSound() {
+    try {
+      this.initAudioContext();
+      if (!this.ctx || !this.masterGain) return;
+      const now = this.ctx.currentTime;
+
+      // Crisp clean culinary slice swish sound
+      const bufferSize = Math.floor(this.ctx.sampleRate * 0.45);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.1));
+      }
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.setValueAtTime(1400, now);
+      filter.frequency.exponentialRampToValueAtTime(350, now + 0.35);
+
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.exponentialRampToValueAtTime(0.2, now + 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.masterGain);
+      noise.start(now);
+      noise.stop(now + 0.42);
+
+      // Sweet celebratory ascending chime tones
+      const notes = [659.25, 783.99, 987.77, 1318.51]; // E5, G5, B5, E6
+      notes.forEach((freq, idx) => {
+        this.playTone(freq, now + 0.18 + idx * 0.09, 2.5, 0.07);
+      });
+    } catch {
+      // ignore
+    }
+  }
+
+  // Play satisfying bite / eating sound effect + joyful chime
+  public playEatSound() {
+    try {
+      this.initAudioContext();
+      if (!this.ctx || !this.masterGain) return;
+      const now = this.ctx.currentTime;
+
+      // Soft culinary bite / crunch burst
+      const biteTimes = [0, 0.14, 0.28];
+      biteTimes.forEach((bt) => {
+        if (!this.ctx || !this.masterGain) return;
+        const bSize = Math.floor(this.ctx.sampleRate * 0.09);
+        const bBuffer = this.ctx.createBuffer(1, bSize, this.ctx.sampleRate);
+        const bData = bBuffer.getChannelData(0);
+        for (let i = 0; i < bSize; i++) {
+          bData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.02));
+        }
+        const bSource = this.ctx.createBufferSource();
+        bSource.buffer = bBuffer;
+
+        const bFilter = this.ctx.createBiquadFilter();
+        bFilter.type = 'bandpass';
+        bFilter.frequency.setValueAtTime(850 + Math.random() * 300, now + bt);
+        bFilter.Q.setValueAtTime(3.0, now + bt);
+
+        const bGain = this.ctx.createGain();
+        bGain.gain.setValueAtTime(0.001, now + bt);
+        bGain.gain.exponentialRampToValueAtTime(0.16, now + bt + 0.015);
+        bGain.gain.exponentialRampToValueAtTime(0.001, now + bt + 0.08);
+
+        bSource.connect(bFilter);
+        bFilter.connect(bGain);
+        bGain.connect(this.masterGain);
+        bSource.start(now + bt);
+        bSource.stop(now + bt + 0.09);
+      });
+
+      // Joyful ascending sparkle chime (C6, E6, G6)
+      const chimes = [1046.50, 1318.51, 1567.98];
+      chimes.forEach((f, i) => {
+        this.playTone(f, now + 0.35 + i * 0.08, 2.0, 0.06);
+      });
+    } catch {
+      // ignore
+    }
+  }
+
+  // Realistic Jet Turbine Ascent & Contrail Wind for Airplane Transition
+  public playPlaneTakeoffSound() {
+    try {
+      this.initAudioContext();
+      if (!this.ctx || !this.masterGain) return;
+      const now = this.ctx.currentTime;
+
+      // 1. Jet engine whoosh / filtered noise
+      const bufferSize = Math.floor(this.ctx.sampleRate * 2.2);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const bandpass = this.ctx.createBiquadFilter();
+      bandpass.type = 'bandpass';
+      bandpass.frequency.setValueAtTime(220, now);
+      bandpass.frequency.exponentialRampToValueAtTime(1600, now + 1.2);
+      bandpass.frequency.exponentialRampToValueAtTime(450, now + 2.0);
+      bandpass.Q.setValueAtTime(2.2, now);
+
+      const noiseGain = this.ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.001, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.25, now + 0.5);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 2.1);
+
+      noise.connect(bandpass);
+      bandpass.connect(noiseGain);
+      noiseGain.connect(this.masterGain);
+      noise.start(now);
+      noise.stop(now + 2.15);
+
+      // 2. Rising turbine pitch
+      const turbineOsc = this.ctx.createOscillator();
+      const turbineGain = this.ctx.createGain();
+      turbineOsc.type = 'sawtooth';
+      turbineOsc.frequency.setValueAtTime(140, now);
+      turbineOsc.frequency.exponentialRampToValueAtTime(480, now + 1.1);
+
+      const turbineFilter = this.ctx.createBiquadFilter();
+      turbineFilter.type = 'lowpass';
+      turbineFilter.frequency.setValueAtTime(300, now);
+      turbineFilter.frequency.exponentialRampToValueAtTime(1200, now + 1.1);
+
+      turbineGain.gain.setValueAtTime(0.001, now);
+      turbineGain.gain.exponentialRampToValueAtTime(0.09, now + 0.4);
+      turbineGain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
+
+      turbineOsc.connect(turbineFilter);
+      turbineFilter.connect(turbineGain);
+      turbineGain.connect(this.masterGain);
+      turbineOsc.start(now);
+      turbineOsc.stop(now + 1.6);
+
+      // 3. Cabin Announcement 'Ding-Dong'
+      const chimeTones = [587.33, 880]; // D5, A5
+      chimeTones.forEach((freq, idx) => {
+        this.playTone(freq, now + 0.15 + idx * 0.25, 2.5, 0.08);
+      });
+    } catch {
+      // ignore
+    }
+  }
+
+  // Triumphant Success Fanfare
+  public playSuccessChime() {
+    try {
+      this.initAudioContext();
+      if (!this.ctx || !this.masterGain) return;
+      const now = this.ctx.currentTime;
+      const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98];
+      notes.forEach((freq, idx) => {
+        this.playTone(freq, now + idx * 0.07, 3.0, 0.08);
+      });
+    } catch {
+      // ignore
+    }
+  }
+
+  // Card Flip Swish
+  public playCardFlipSound() {
+    try {
+      this.initAudioContext();
+      if (!this.ctx || !this.masterGain) return;
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.exponentialRampToValueAtTime(850, now + 0.08);
+
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(0.06, now + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+
+      osc.connect(gain);
+      gain.connect(this.masterGain);
+      osc.start(now);
+      osc.stop(now + 0.1);
+    } catch {
+      // ignore
+    }
+  }
+
+  // Soft Bubble Pop / Tap Sound
+  public playBubblePopSound() {
+    try {
+      this.initAudioContext();
+      if (!this.ctx || !this.masterGain) return;
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(450, now);
+      osc.frequency.exponentialRampToValueAtTime(800, now + 0.06);
+
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(0.08, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+
+      osc.connect(gain);
+      gain.connect(this.masterGain);
+      osc.start(now);
+      osc.stop(now + 0.08);
+    } catch {
+      // ignore
+    }
+  }
 }
 
 export const soundscape = new SoundscapeEngine();

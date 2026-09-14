@@ -74,23 +74,6 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onStart }) => {
 
       {/* Main Narrative Content Container */}
       <div className="relative z-20 max-w-3xl mx-auto text-center space-y-8 sm:space-y-10 py-12">
-        {/* Soft Badge */}
-        <AnimatePresence>
-          {step >= 1 && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2 }}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs tracking-widest uppercase text-amber-200/80 font-sans"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>A Farewell Journey</span>
-              <span>•</span>
-              <span>Nepal → Canada</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         {/* Step 1: “Prasamsa Didi…” */}
         <AnimatePresence>
           {step >= 1 && (

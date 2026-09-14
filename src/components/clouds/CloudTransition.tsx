@@ -50,16 +50,6 @@ export const CloudTransition: React.FC = () => {
 
       {/* Text Message Sequence */}
       <div className="relative z-10 max-w-3xl mx-auto text-center space-y-8">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.2 }}
-          className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/5 border border-white/10 text-amber-300/80 shadow-inner"
-        >
-          <Sparkles className="w-5 h-5" />
-        </motion.div>
-
         <div className="space-y-4">
           <motion.p
             initial={{ opacity: 0, y: 25 }}

@@ -71,16 +71,6 @@ export const SuitcaseSection: React.FC = () => {
       <div className="relative z-10 max-w-4xl w-full mx-auto space-y-12">
         {/* Header */}
         <div className="text-center space-y-3 max-w-xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs tracking-widest uppercase text-amber-300 font-sans"
-          >
-            <Luggage className="w-3.5 h-3.5" />
-            <span>Interactive Packing</span>
-          </motion.div>
-
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
