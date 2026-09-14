@@ -1,0 +1,8 @@
+{
+  "name": "Prasamsa Didi Farewell — Nepal to Canada",
+  "description": "A handcrafted, cinematic farewell experience for Prasamsa Didi as she begins her new chapter from Nepal to Canada.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

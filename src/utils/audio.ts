@@ -1,0 +1,247 @@
+/**
+ * Web Audio API based Procedural Ambient Piano & Cinematic Soundscape.
+ * Generates an emotional, soft, nostalgic musical piece without requiring external audio downloads,
+ * while also allowing custom audio file playback if uploaded!
+ */
+
+class SoundscapeEngine {
+  private ctx: AudioContext | null = null;
+  private isPlaying: boolean = false;
+  private timer: number | null = null;
+  private masterGain: GainNode | null = null;
+  private volume: number = 0.6;
+  private customAudio: HTMLAudioElement | null = null;
+  private listeners: Set<(playing: boolean) => void> = new Set();
+
+  private chordProgression = [
+    // Emotional progression: Cmaj9 -> G6/B -> Am9 -> Fadd9 -> Dm9 -> Gsus4 -> Cmaj7
+    [261.63, 329.63, 392.00, 493.88, 587.33], // Cmaj9 (C4, E4, G4, B4, D5)
+    [246.94, 293.66, 392.00, 440.00, 587.33], // G6/B (B3, D4, G4, A4, D5)
+    [220.00, 261.63, 329.63, 392.00, 493.88], // Am9 (A3, C4, E4, G4, B4)
+    [174.61, 261.63, 329.63, 392.00, 523.25], // Fadd9 (F3, C4, E4, G4, C5)
+    [146.83, 220.00, 261.63, 349.23, 440.00], // Dm9 (D3, A3, C4, F4, A4)
+    [196.00, 261.63, 293.66, 392.00, 587.33], // Gsus4 (G3, C4, D4, G4, D5)
+    [261.63, 329.63, 392.00, 493.88, 659.25], // Cmaj7 (C4, E4, G4, B4, E5)
+    [174.61, 220.00, 261.63, 329.63, 392.00], // Fmaj7 (F3, A3, C4, E4, G4)
+  ];
+
+  private currentChordIndex = 0;
+
+  public subscribe(fn: (playing: boolean) => void): () => void {
+    this.listeners.add(fn);
+    return () => {
+      this.listeners.delete(fn);
+    };
+  }
+
+  private notify() {
+    this.listeners.forEach((fn) => fn(this.isPlaying));
+  }
+
+  public getIsPlaying(): boolean {
+    return this.isPlaying;
+  }
+
+  public getVolume(): number {
+    return this.volume;
+  }
+
+  public setVolume(val: number) {
+    this.volume = Math.max(0, Math.min(1, val));
+    if (this.masterGain && this.ctx) {
+      this.masterGain.gain.setValueAtTime(this.volume, this.ctx.currentTime);
+    }
+    if (this.customAudio) {
+      this.customAudio.volume = this.volume;
+    }
+  }
+
+  public setCustomAudioUrl(url: string) {
+    if (this.customAudio) {
+      this.customAudio.pause();
+      this.customAudio = null;
+    }
+    if (url) {
+      this.customAudio = new Audio(url);
+      this.customAudio.loop = true;
+      this.customAudio.volume = this.volume;
+      if (this.isPlaying) {
+        this.stopSynthesizer();
+        this.customAudio.play().catch(() => {});
+      }
+    }
+  }
+
+  private initAudioContext() {
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      this.ctx = new AudioCtx();
+      this.masterGain = this.ctx.createGain();
+      this.masterGain.gain.setValueAtTime(this.volume, this.ctx.currentTime);
+
+      // Low pass filter for soft dreaminess
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1400, this.ctx.currentTime);
+
+      this.masterGain.connect(filter);
+      filter.connect(this.ctx.destination);
+    }
+    if (this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+  }
+
+  private playTone(freq: number, startTime: number, duration: number, gainValue: number, isBass = false) {
+    if (!this.ctx || !this.masterGain) return;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    // Warm sine + subtle triangle overtone
+    osc.type = isBass ? 'sine' : 'triangle';
+    osc.frequency.setValueAtTime(freq, startTime);
+
+    // Piano-like decay envelope
+    gain.gain.setValueAtTime(0.0001, startTime);
+    gain.gain.exponentialRampToValueAtTime(gainValue, startTime + 0.08);
+    gain.gain.exponentialRampToValueAtTime(gainValue * 0.4, startTime + 0.6);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+    osc.connect(gain);
+    gain.connect(this.masterGain);
+
+    osc.start(startTime);
+    osc.stop(startTime + duration + 0.1);
+  }
+
+  private stepProgression() {
+    if (!this.ctx || !this.isPlaying) return;
+
+    const now = this.ctx.currentTime;
+    const chord = this.chordProgression[this.currentChordIndex];
+    this.currentChordIndex = (this.currentChordIndex + 1) % this.chordProgression.length;
+
+    // Play root bass
+    this.playTone(chord[0] / 2, now, 6.5, 0.28, true);
+
+    // Arpeggiate chord notes with soft humanized delays
+    chord.forEach((freq, idx) => {
+      const delay = idx === 0 ? 0.05 : idx * 0.45 + (Math.random() * 0.05);
+      const noteGain = 0.08 / (idx + 1) + 0.04;
+      this.playTone(freq, now + delay, 5.0, noteGain);
+    });
+
+    // High shimmer note
+    if (Math.random() > 0.4) {
+      const shimmerFreq = chord[chord.length - 1] * 2;
+      this.playTone(shimmerFreq, now + 2.2, 4.0, 0.03);
+    }
+  }
+
+  private startSynthesizer() {
+    this.stepProgression();
+    // Advance every 4.8 seconds for slow, breathing cinematic tempo
+    this.timer = window.setInterval(() => {
+      this.stepProgression();
+    }, 4800);
+  }
+
+  private stopSynthesizer() {
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+  }
+
+  public play() {
+    this.initAudioContext();
+    this.isPlaying = true;
+    this.notify();
+
+    if (this.customAudio) {
+      this.customAudio.play().catch(() => {});
+    } else {
+      this.startSynthesizer();
+    }
+  }
+
+  public pause() {
+    this.isPlaying = false;
+    this.notify();
+
+    if (this.customAudio) {
+      this.customAudio.pause();
+    }
+    this.stopSynthesizer();
+  }
+
+  public toggle() {
+    if (this.isPlaying) {
+      this.pause();
+    } else {
+      this.play();
+    }
+  }
+
+  // Play a soft wind chime / blessing bell on special interaction
+  public playChime() {
+    try {
+      this.initAudioContext();
+      if (!this.ctx || !this.masterGain) return;
+      const now = this.ctx.currentTime;
+      const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+      notes.forEach((freq, idx) => {
+        this.playTone(freq, now + idx * 0.12, 3.5, 0.07);
+      });
+    } catch {
+      // ignore
+    }
+  }
+
+  // Play a subtle candle blow effect sound
+  public playBlowSound() {
+    try {
+      this.initAudioContext();
+      if (!this.ctx || !this.masterGain) return;
+      const now = this.ctx.currentTime;
+      
+      // White noise buffer for gentle breath
+      const bufferSize = this.ctx.sampleRate * 1.5;
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+      
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(400, now);
+      filter.Q.setValueAtTime(1.5, now);
+      
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.exponentialRampToValueAtTime(0.2, now + 0.3);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+      
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.masterGain);
+      
+      noise.start(now);
+      noise.stop(now + 1.3);
+
+      // Followed by sweet chime
+      setTimeout(() => {
+        this.playChime();
+      }, 500);
+    } catch {
+      // ignore
+    }
+  }
+}
+
+export const soundscape = new SoundscapeEngine();
