@@ -88,7 +88,7 @@ export const photos: PhotoItem[] = [
   },
   {
     id: 'scrapbook-5',
-    src: '/images/p7.jpg',
+    src: '/images/p40.jpg',
     alt: 'Prasamsa memory',
     caption: 'A heart full of dreams and kindness.',
     location: 'Nepal',
@@ -110,11 +110,11 @@ export const photos: PhotoItem[] = [
     id: 'scrapbook-7',
     src: '/images/p9.jpg',
     alt: 'Prasamsa memory',
-    caption: 'Cherished afternoons and endless talks.',
+    caption: 'The blue one',
     location: 'Nepal',
     category: 'scrapbook',
     rotation: 1,
-    note: 'Conversations that stayed in our hearts.'
+    note: 'Blue is my fav.'
   },
   {
     id: 'scrapbook-8',
@@ -160,11 +160,11 @@ export const photos: PhotoItem[] = [
     id: 'scrapbook-12',
     src: '/images/p14.jpg',
     alt: 'Prasamsa memory',
-    caption: 'Laughter that echoes across any distance.',
+    caption: 'The cool one.',
     location: 'Nepal',
     category: 'scrapbook',
     rotation: -3,
-    note: 'Distance cannot silence this bond.'
+    note: 'Wish you to stay this cool. '
   },
   {
     id: 'scrapbook-13',
@@ -251,7 +251,7 @@ export const photos: PhotoItem[] = [
   // 1. THEN
   {
     id: 'timeline-then-1',
-    src: '/images/p25.jpg',
+    src: '/images/p22.jpg',
     alt: 'Then - Humble beginnings',
     caption: 'Where the journey first began.',
     category: 'timeline-then',
@@ -260,7 +260,7 @@ export const photos: PhotoItem[] = [
   },
   {
     id: 'timeline-then-2',
-    src: '/images/p26.jpg',
+    src: '/images/p24.jpg',
     alt: 'Then - Sweet early days',
     caption: 'Simple days filled with honest laughter.',
     category: 'timeline-then',
@@ -271,7 +271,7 @@ export const photos: PhotoItem[] = [
   // 2. GROWING UP
   {
     id: 'timeline-growth-1',
-    src: '/images/p27.jpg',
+    src: '/images/p25.jpg',
     alt: 'Growing up - Learning and exploring',
     caption: 'Discovering the world and your own courage.',
     category: 'timeline-growth',

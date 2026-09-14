@@ -100,7 +100,7 @@ export const finalLetterContent: FinalLetterData = {
     "You have always been someone with a golden heart — someone who brings light, calm, and genuine kindness to everyone around you. Watching you take this big leap and step onto Canadian soil to build your future is an inspiration.",
     "Canada is about to gain one of the most hardworking, kind, and wonderful human beings we know. We hope you embrace every new street, every snowfall, every new friendship, and every challenge with that trademark Prasamsa smile.",
     "Never forget where you come from, but never let fear hold you back from where you want to go. Chase your highest dreams, take care of your health, eat well, stay warm, and know that back home in Nepal, you will always have our unconditional love and support.",
-    "This isn't goodbye. It’s just the beginning of the most exciting chapter of your life."
+    "This isn't goodbye. It’s just the beginning of the most exciting chapter of your life. We will miss you so muchh."
   ],
   signoff: "Wishing you clear skies, safe flights, and a lifetime of happiness,",
   sender: "With all our love & blessings from Nepal 🇳🇵 ❤️ 🇨🇦",
