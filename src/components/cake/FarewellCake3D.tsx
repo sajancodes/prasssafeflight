@@ -3,7 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Sparkles as DreiSparkles } from '@react-three/drei';
 import * as THREE from 'three';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wind, Sparkles, RotateCw, Maximize2, Minimize2, Utensils, Heart, RefreshCw, Plane, ArrowRight } from 'lucide-react';
+import { Wind, Sparkles, RotateCw, Maximize2, Minimize2, Utensils, Heart, RefreshCw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundscape } from '../../utils/audio';
 
@@ -1037,40 +1037,6 @@ export const FarewellCake3D: React.FC<FarewellCake3DProps> = ({ onNavigateSurpri
               </button>
             )}
           </div>
-        </div>
-
-        {/* Dedicated Action Bar Directly Below the 3D Cake Canvas */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 sm:p-6 rounded-3xl bg-[#0d101a]/95 border border-amber-500/30 backdrop-blur-md shadow-2xl">
-          <div className="flex items-center gap-3.5 text-left w-full sm:w-auto">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-red-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-2xl shrink-0 shadow-inner">
-              🎁
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h4 className="text-base sm:text-lg font-serif-title font-bold text-white">
-                  Didi&apos;s Canada Send-Off Surprise
-                </h4>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase bg-amber-400/20 border border-amber-400/40 text-amber-300">
-                  New Surprise
-                </span>
-              </div>
-              <p className="text-xs sm:text-sm text-neutral-300 font-sans mt-0.5">
-                {isAllEaten
-                  ? 'All slices eaten! Click below to fly directly to Didi\'s surprise arcade & keepsakes.'
-                  : 'Play the 23kg luggage challenge, slang quiz, catch blessings & claim your VIP boarding pass!'}
-              </p>
-            </div>
-          </div>
-
-          <button
-            id="cake-below-navigate-surprise-button"
-            onClick={handleFinishClickHere}
-            className="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-gradient-to-r from-red-600 via-amber-500 to-red-600 hover:brightness-110 text-white text-sm font-bold shadow-xl shadow-red-950/80 transition-all hover:scale-105 active:scale-95 cursor-pointer group"
-          >
-            <Plane className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
-            <span>Open New Surprise 🍁</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </button>
         </div>
       </div>
 

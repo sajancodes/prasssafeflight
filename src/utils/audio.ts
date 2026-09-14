@@ -159,11 +159,44 @@ class SoundscapeEngine {
     this.isPlaying = true;
     this.notify();
 
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume().catch(() => {});
+    }
+
     if (this.customAudio) {
       this.customAudio.play().catch(() => {});
     } else {
       this.startSynthesizer();
     }
+  }
+
+  public startAutoplay() {
+    if (this.isPlaying) return;
+
+    // Attempt direct play immediately upon arriving at site
+    try {
+      this.play();
+    } catch {
+      // ignore
+    }
+
+    // Modern browsers require a user gesture if they block unprompted audio autoplay.
+    // Register one-time touch/click/scroll listeners to automatically resume/start music on the first user action.
+    const unlockEvents = ['click', 'touchstart', 'pointerdown', 'keydown', 'scroll'];
+    const handleUnlock = () => {
+      try {
+        if (!this.isPlaying) {
+          this.play();
+        } else if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume().catch(() => {});
+        }
+      } catch {
+        // ignore
+      }
+      unlockEvents.forEach((evt) => window.removeEventListener(evt, handleUnlock));
+    };
+
+    unlockEvents.forEach((evt) => window.addEventListener(evt, handleUnlock, { passive: true, once: true }));
   }
 
   public pause() {
