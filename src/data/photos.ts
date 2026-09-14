@@ -434,6 +434,96 @@ export const photos: PhotoItem[] = [
     category: 'scrapbook',
     rotation: -4,
     note: 'These funny memories will make us smile every single time.'
+  },
+
+  // Newly Added Vault Photos
+  {
+    id: 'vault-new-1',
+    src: '/images/801232569_1097050846155200_7270695150476201644_n.jpg',
+    alt: 'Prasamsa Didi candid memory',
+    caption: 'Golden smiles and unforgettable moments.',
+    location: 'Nepal',
+    category: 'portrait',
+    rotation: 2,
+    date: 'Precious Moments',
+    note: 'A memory we will hold close to our hearts forever.'
+  },
+  {
+    id: 'vault-new-2',
+    src: '/images/803366819_1858400032196814_686375055593856086_n.jpg',
+    alt: 'Prasamsa Didi radiant glow',
+    caption: 'Radiating calm, grace, and happiness.',
+    location: 'Nepal',
+    category: 'scrapbook',
+    rotation: -2,
+    date: 'Cherished Days',
+    note: 'That comforting presence that makes everything better.'
+  },
+  {
+    id: 'vault-new-3',
+    src: '/images/803539709_1420615993344798_8902937005516571309_n.jpg',
+    alt: 'Prasamsa Didi sweet memory',
+    caption: 'Little moments that become lifelong treasures.',
+    location: 'Nepal',
+    category: 'highlight',
+    rotation: 3,
+    date: 'Memories of Home',
+    note: 'Always bringing warmth wherever she goes.'
+  },
+  {
+    id: 'vault-new-4',
+    src: '/images/804361599_913628121524888_2758382795172371077_n.jpg',
+    alt: 'Prasamsa Didi candid snapshot',
+    caption: 'The gentle spirit and sparkling eyes of our Didi.',
+    location: 'Nepal',
+    category: 'scrapbook',
+    rotation: -1,
+    date: 'Kathmandu',
+    note: 'Unconditional kindness in every single gesture.'
+  },
+  {
+    id: 'vault-new-5',
+    src: '/images/804642740_1405876288392321_1456270778390774513_n.jpg',
+    alt: 'Prasamsa Didi beautiful memory',
+    caption: 'Smiles that travel across mountains and oceans.',
+    location: 'Nepal',
+    category: 'portrait',
+    rotation: 2,
+    date: 'Nepal 🇳🇵',
+    note: 'No matter the miles, this smile connects us.'
+  },
+  {
+    id: 'vault-new-6',
+    src: '/images/806317381_1088302137224782_7361695603970752195_n.jpg',
+    alt: 'Prasamsa Didi cherished memory',
+    caption: 'Stepping forward into a bright, golden future.',
+    location: 'Nepal',
+    category: 'scrapbook',
+    rotation: -3,
+    date: 'Canada Bound 🍁',
+    note: 'Ready to write an incredible new chapter in Canada.'
+  },
+  {
+    id: 'vault-new-7',
+    src: '/images/808284313_1017491924685557_3987537658472101615_n.jpg',
+    alt: 'Prasamsa Didi glowing portrait',
+    caption: 'Strength, grace, and limitless potential.',
+    location: 'Nepal',
+    category: 'highlight',
+    rotation: 1,
+    date: 'Forever Loved',
+    note: 'Our pride and our guiding star.'
+  },
+  {
+    id: 'vault-new-8',
+    src: '/images/Gemini_Generated_Image_skcmt3skcmt3skcm.jpeg',
+    alt: 'Special celebration portrait',
+    caption: 'Wings of hope — from the Himalayas to Canadian horizons.',
+    location: 'Kathmandu to Canada',
+    category: 'portrait',
+    rotation: 0,
+    date: 'Blessings & Love',
+    note: 'A magical tribute to your exciting new journey.'
   }
 ];
 

@@ -11,7 +11,45 @@ class SoundscapeEngine {
   private masterGain: GainNode | null = null;
   private volume: number = 0.6;
   private customAudio: HTMLAudioElement | null = null;
+  private audioTrackUrl: string = '/music.mp3';
   private listeners: Set<(playing: boolean) => void> = new Set();
+
+  constructor() {
+    this.setupAudioElement(this.audioTrackUrl);
+  }
+
+  private setupAudioElement(url: string) {
+    if (this.customAudio) {
+      this.customAudio.pause();
+      this.customAudio = null;
+    }
+
+    try {
+      const audio = new Audio(url);
+      audio.loop = true;
+      audio.volume = this.volume;
+      audio.preload = 'auto';
+
+      audio.addEventListener('canplay', () => {
+        if (this.isPlaying) {
+          this.stopSynthesizer();
+          audio.play().catch(() => {});
+        }
+      });
+
+      audio.addEventListener('error', () => {
+        // If music.mp3 is not yet present, fallback to procedural ambient audio
+        if (this.isPlaying) {
+          this.initAudioContext();
+          this.startSynthesizer();
+        }
+      });
+
+      this.customAudio = audio;
+    } catch {
+      // Audio element creation error fallback
+    }
+  }
 
   private chordProgression = [
     // Emotional progression: Cmaj9 -> G6/B -> Am9 -> Fadd9 -> Dm9 -> Gsus4 -> Cmaj7
@@ -57,18 +95,11 @@ class SoundscapeEngine {
   }
 
   public setCustomAudioUrl(url: string) {
-    if (this.customAudio) {
-      this.customAudio.pause();
-      this.customAudio = null;
-    }
-    if (url) {
-      this.customAudio = new Audio(url);
-      this.customAudio.loop = true;
-      this.customAudio.volume = this.volume;
-      if (this.isPlaying) {
-        this.stopSynthesizer();
-        this.customAudio.play().catch(() => {});
-      }
+    this.audioTrackUrl = url;
+    this.setupAudioElement(url);
+    if (this.isPlaying && this.customAudio) {
+      this.stopSynthesizer();
+      this.customAudio.play().catch(() => {});
     }
   }
 
@@ -155,17 +186,30 @@ class SoundscapeEngine {
   }
 
   public play() {
-    this.initAudioContext();
     this.isPlaying = true;
     this.notify();
 
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume().catch(() => {});
-    }
-
     if (this.customAudio) {
-      this.customAudio.play().catch(() => {});
+      const playPromise = this.customAudio.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            this.stopSynthesizer();
+          })
+          .catch(() => {
+            // If music.mp3 is missing or blocked, run ambient procedural synth
+            this.initAudioContext();
+            if (this.ctx && this.ctx.state === 'suspended') {
+              this.ctx.resume().catch(() => {});
+            }
+            this.startSynthesizer();
+          });
+      }
     } else {
+      this.initAudioContext();
+      if (this.ctx && this.ctx.state === 'suspended') {
+        this.ctx.resume().catch(() => {});
+      }
       this.startSynthesizer();
     }
   }

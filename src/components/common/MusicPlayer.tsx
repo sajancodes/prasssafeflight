@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Volume2, VolumeX, Music, Disc3, Sparkles } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Volume2, VolumeX, Music, Disc3, Sparkles, Upload } from 'lucide-react';
 import { soundscape } from '../../utils/audio';
 
 export const MusicPlayer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(soundscape.getIsPlaying());
   const [volume, setVolume] = useState(soundscape.getVolume());
   const [showControls, setShowControls] = useState(false);
+  const [trackName, setTrackName] = useState('music.mp3');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const unsub = soundscape.subscribe((playing) => {
@@ -26,22 +28,39 @@ export const MusicPlayer: React.FC = () => {
     soundscape.setVolume(val);
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      soundscape.setCustomAudioUrl(url);
+      setTrackName(file.name);
+    }
+  };
+
   return (
     <div id="music-player-container" className="fixed bottom-5 right-5 z-50">
       <div className="relative flex items-center gap-2">
         {showControls && (
-          <div className="flex items-center gap-3 bg-[#13151b]/90 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full shadow-2xl animate-in fade-in slide-in-from-right duration-200">
+          <div className="flex items-center gap-3 bg-[#13151b]/95 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full shadow-2xl animate-in fade-in slide-in-from-right duration-200 text-xs">
+            <span className="text-amber-300/80 font-mono text-[11px] truncate max-w-[100px]" title={trackName}>
+              {trackName}
+            </span>
+
+            <div className="h-3 w-[1px] bg-white/15" />
+
             <button
               onClick={() => soundscape.playChime()}
               title="Play blessing chime"
-              className="text-amber-400/80 hover:text-amber-300 text-xs flex items-center gap-1 transition-colors"
+              className="text-amber-400/80 hover:text-amber-300 text-xs flex items-center gap-1 transition-colors cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Chime</span>
+              <span className="hidden sm:inline">Chime</span>
             </button>
+
             <div className="h-3 w-[1px] bg-white/15" />
+
             <div className="flex items-center gap-2">
-              <span className="text-[11px] text-white/50 tracking-wider">VOL</span>
+              <span className="text-[10px] text-white/50 tracking-wider">VOL</span>
               <input
                 type="range"
                 min="0"
@@ -52,6 +71,24 @@ export const MusicPlayer: React.FC = () => {
                 className="w-16 h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[#c0392b]"
               />
             </div>
+
+            <div className="h-3 w-[1px] bg-white/15" />
+
+            {/* Optional Manual File Upload trigger */}
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              title="Upload / Select music file"
+              className="text-white/60 hover:text-white transition-colors cursor-pointer"
+            >
+              <Upload className="w-3.5 h-3.5" />
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="audio/*"
+              className="hidden"
+              onChange={handleFileUpload}
+            />
           </div>
         )}
 
@@ -73,7 +110,7 @@ export const MusicPlayer: React.FC = () => {
                 <span className="w-[3px] bg-amber-300 rounded-full animate-[pulse_1.2s_ease-in-out_infinite] h-2/3" />
                 <span className="w-[3px] bg-amber-400 rounded-full animate-[pulse_0.9s_ease-in-out_infinite] h-4/5" />
               </div>
-              <span className="text-xs font-medium tracking-wide">Soundscape On</span>
+              <span className="text-xs font-medium tracking-wide">music.mp3</span>
             </>
           ) : (
             <>
